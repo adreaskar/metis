@@ -10,8 +10,8 @@ const session = require('express-session');
 
 // Database connection -------------------------------------------------------------------------------------
 
-const baseUrl = "mongodb://localhost:27017/";
-//const baseUrl = "mongodb://10.20.20.98/";
+//const baseUrl = "mongodb://localhost:27017/";
+const baseUrl = "mongodb://10.20.20.98/";
 mongoose.main = mongoose.createConnection(baseUrl + "metis");
 
 const userSchema = require('./models/User');
