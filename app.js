@@ -7,6 +7,7 @@ const mongoose = require("mongoose");
 const crypto = require("crypto");
 const http = require("http");
 const session = require('express-session');
+const fetch = require('node-fetch');
 
 // Database connection -------------------------------------------------------------------------------------
 
@@ -128,7 +129,7 @@ server.listen(5000, function () {
 io.on("connection", socket => {
     socket.on('send-to-orchestrator', data => {
 
-        fetch("http://83.212.238.166:50002/analysis", {
+        fetch("http://10.20.20.85:5000/analysis", {
         	method: "POST",
         	headers: {'Content-Type': 'application/json'}, 
         	body: JSON.stringify(data)
