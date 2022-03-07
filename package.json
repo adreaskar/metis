@@ -1,0 +1,22 @@
+{
+  "name": "metis",
+  "version": "1.0.0",
+  "description": "Research work for Metis Cybersecurities",
+  "main": "app.js",
+  "scripts": {
+    "start": "nodemon app.js"
+  },
+  "author": "Andreas Karabetian",
+  "license": "ISC",
+  "dependencies": {
+    "body-parser": "^1.19.2",
+    "connect-mongo": "^4.6.0",
+    "crypto": "^1.0.1",
+    "ejs": "^3.1.6",
+    "express": "^4.17.3",
+    "express-session": "^1.17.2",
+    "mongodb": "^4.4.1",
+    "mongoose": "^6.2.4",
+    "socket.io": "^4.4.1"
+  }
+}
