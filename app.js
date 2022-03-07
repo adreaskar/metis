@@ -127,14 +127,14 @@ server.listen(5000, function () {
 
 io.on("connection", socket => {
     socket.on('send-to-orchestrator', data => {
-        console.log(data);
 
-        // fetch("http://83.212.238.166:50002/analysis", {
-        // 	method: "POST",
-        // 	headers: {'Content-Type': 'application/json'}, 
-        // 	body: JSON.stringify(data)
-        // }).then(res => {
-        // 	console.log("Data sent to orchestrator!", res);
-        // });
+        fetch("http://83.212.238.166:50002/analysis", {
+        	method: "POST",
+        	headers: {'Content-Type': 'application/json'}, 
+        	body: JSON.stringify(data)
+        }).then(res => {
+        	console.log("Data sent to orchestrator!", res);
+        });
+
     })
 });
