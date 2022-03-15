@@ -1,6 +1,7 @@
 version: "3"
 services: 
   web:
+    container_name: ui-metis
     environment:
       - MONGO_URL=mongodb://10.20.20.98/
       - NODE_ENV=production

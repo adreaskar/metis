@@ -1,6 +1,7 @@
 version: "3"
 services: 
   web:
+    container_name: ui-metis
     volumes:
       - ./:/app:ro
       - /app/node_modules
@@ -11,6 +12,7 @@ services:
     depends_on:
       - "mongo"
   mongo:
+    container_name: mongo-metis
     image: mongo
     ports:
       - "27017:27017"
