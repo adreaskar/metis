@@ -2,7 +2,15 @@ version: "3"
 services: 
   web:
     container_name: ui-metis
+    image: user-interface-metis
+    build:
+      context: .
+      args:
+        - NODE_ENV=production
+    ports:
+      - "5000:5000"
     environment:
+      - PORT=5000
       - MONGO_URL=mongodb://10.20.20.98/
       - NODE_ENV=production
     command: node app.js
