@@ -1,0 +1,7 @@
+version: "3"
+services: 
+  web:
+    environment:
+      - MONGO_URL=mongodb://10.20.20.98/
+      - NODE_ENV=production
+    command: node app.js

@@ -4,7 +4,8 @@
   "description": "Research work for Metis Cybersecurities",
   "main": "app.js",
   "scripts": {
-    "start": "nodemon app.js"
+    "start": "node app.js",
+    "dev": "nodemon -L app.js"
   },
   "author": "Andreas Karabetian",
   "license": "ISC",
@@ -19,5 +20,8 @@
     "mongoose": "^6.2.4",
     "node-fetch": "^2.6.5",
     "socket.io": "^4.4.1"
+  },
+  "devDependencies": {
+    "nodemon": "^2.0.15"
   }
 }

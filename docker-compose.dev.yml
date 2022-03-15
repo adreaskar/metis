@@ -1,0 +1,16 @@
+version: "3"
+services: 
+  web:
+    volumes:
+      - ./:/app:ro
+      - /app/node_modules
+    environment:
+      - MONGO_URL=mongodb://mongo:27017/
+      - NODE_ENV=development
+    command: npm run dev
+    depends_on:
+      - "mongo"
+  mongo:
+    image: mongo
+    ports:
+      - "27017:27017"

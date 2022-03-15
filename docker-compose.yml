@@ -1,0 +1,9 @@
+version: "3"
+services: 
+  web:
+    image: user-interface-metis
+    build: .
+    ports:
+      - "5000:5000"
+    environment:
+      - PORT=5000

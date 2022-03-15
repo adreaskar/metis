@@ -11,9 +11,9 @@ const fetch = require('node-fetch');
 
 // Database connection -------------------------------------------------------------------------------------
 
-//const baseUrl = "mongodb://localhost:27017/";
-const baseUrl = "mongodb://10.20.20.98/";
-mongoose.main = mongoose.createConnection(baseUrl + "metis");
+//dev  mongodb://mongo::27017/
+//prod mongodb://10.20.20.98/
+mongoose.main = mongoose.createConnection(process.env.MONGO_URL + "metis");
 
 const userSchema = require('./models/User');
 const User = mongoose.main.model("User", userSchema);
@@ -32,7 +32,7 @@ app.use(session({
     resave:false,
     saveUninitialized:false,
     store:MongoStore.create({
-        mongoUrl: baseUrl+"metis",
+        mongoUrl: process.env.MONGO_URL+"metis",
         collection:'sessions'
     })
 }));
@@ -121,8 +121,9 @@ app.route("/messages")
         res.sendStatus(200);
     });
 
+const port = process.env.PORT || 5000;
 
-server.listen(5000, function () {
+server.listen(port, function () {
     console.log('Started on port 5000');
 });
 
