@@ -1,7 +1,7 @@
 version: "3"
 services: 
   web:
-    container_name: ui-metis
+    container_name: metis-ui
     image: user-interface-metis
     build:
       context: .
@@ -15,12 +15,19 @@ services:
     environment:
       - PORT=5000
       - MONGO_URL=mongodb://mongo:27017/
+      - ORCHESTRATOR_URL=http://10.20.20.85:5000/analysis
       - NODE_ENV=development
     command: npm run dev
     depends_on:
       - "mongo"
+
   mongo:
-    container_name: mongo-metis
+    container_name: metis-mongo
     image: mongo
     ports:
       - "27017:27017"
+    volumes:
+      - mongo-db:/data/db
+
+volumes:
+  mongo-db:

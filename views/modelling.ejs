@@ -110,13 +110,22 @@
                                 <span class="flex-grow-1 expanded-only" style="font-size: large;">Tools</span>
                             </a>
                             <ul class="collapse show list-unstyled sidebar-sub-items m-0" id="toolsmenu">
-                                <!-- Data Load -->
+                                <!-- Data Ingestion -->
                                 <li>
                                     <div id="tool" class="draggable_operator d-flex flex-row flex-grow-1 align-items-center txt-dark sidebar-item" style="width: 100%;">
                                         <span class="d-flex flex-row flex-shrink-0 align-items-center justify-content-center sidebar-icon">
                                             <span class="material-icons" style="color: #a53434;"> move_down </span>
                                         </span>
                                         <span class="flex-grow-1 expanded-only">Data Ingestion</span>
+                                    </div>
+                                </li>
+                                <!-- Join Datasets -->
+                                <li>
+                                    <div id="tool" class="draggable_operator d-flex flex-row flex-grow-1 align-items-center txt-dark sidebar-item" style="width: 100%;">
+                                        <span class="d-flex flex-row flex-shrink-0 align-items-center justify-content-center sidebar-icon">
+                                            <span class="material-icons" style="color: #a53434;"> join_full </span>
+                                        </span>
+                                        <span class="flex-grow-1 expanded-only">Join Datasets</span>
                                     </div>
                                 </li>
                                 <!-- Data Load -->
@@ -169,7 +178,7 @@
                         </div>
 
                         <!-- Load Data -->
-                        <!-- <div class="d-flex flex-column flex-shrink-0 position-relative">
+                        <div class="d-flex flex-column flex-shrink-0 position-relative">
                             <a href="#diagram" id="diagrambtn" data-toggle="collapse" aria-expanded="false" class="d-flex flex-row flex-grow-1 align-items-center position-relative txt-dark sidebar-item dropdown-toggle" onclick="addClass(this)">
                                 <span class="d-flex flex-row flex-shrink-0 align-items-center justify-content-center sidebar-icon text-danger">
                                     <img src="img/json.png" style="width: 24px;">
@@ -183,7 +192,7 @@
                                     </div>
                                 </li>
                             </ul>
-                        </div> -->
+                        </div>
                         
                         <button id="delete_node" type="button" class="delete_selected_button btn btn-primary" style="width: 80%;margin: 20px auto 5px auto;" onclick="deleteNode()">Delete selected</button>
 
@@ -228,7 +237,7 @@
                                 <button type="submit" class="get_data btn btn-primary" id="load_data">Load Data</button>
                             </div>
                             <div class="inline">
-                                <button type="button" class="set_data btn btn-primary" id="send_data">Export data</button>
+                                <button type="button" class="set_data btn btn-primary" id="send_data">Send data</button>
                             </div>
                             <div class="inline">
                                 <button type="button" class="set_data btn btn-primary" id="set_data">
@@ -251,7 +260,7 @@
                 </div>
 
                 <footer style="text-align:center;margin-bottom: 13px;">
-                    <span style="font-size: 14px;">Diastema © 2021</span>
+                    <span style="font-size: 14px;">Diastema © 2020 - <script>document.write(new Date().getFullYear())</script></span>
                 </footer>
             </div>
         </div>

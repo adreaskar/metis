@@ -46,7 +46,7 @@ var sink =
     '</div>' +
 '</div>';
 
-var classification1, regression1;
+var classification1, regression1, datajoin1;
 regression1 =
 '<div onclick="editNode(this)">' +
     '<div id="tool" class="flowchart-operator-tool flowchart-default-operator draggable_operator" data-nb-inputs="0" data-nb-outputs="1">' +
@@ -97,6 +97,31 @@ classification1 =
             '</div>' +
         '</div>' + 
         '<select name="nodeProperty" id="nodeProperty" onchange="changeProperty(this)" style="margin:5px auto 10px auto;">';
+datajoin1 =
+'<div onclick="editNode(this)">' +
+    '<div id="tool" class="flowchart-operator-data-load flowchart-default-operator draggable_operator" data-nb-inputs="0" data-nb-outputs="1">' +
+        '<div class="flowchart-operator-title ui-draggable-handle"> Join Datasets </div>' +
+        '<div class="flowchart-operator-inputs-outputs">' +
+            '<div class="flowchart-operator-inputs">' +
+                '<div class="flowchart-operator-connector-set">' +
+                    '<div class="flowchart-operator-connector">' +
+                        '<div class="flowchart-operator-connector-label">Load</div>' +
+                        '<div class="flowchart-operator-connector-arrow" onclick="drawLine(this)"></div>' +
+                        '<div class="flowchart-operator-connector-small-arrow"></div>' +
+                    '</div>' +
+                '</div>' +
+            '</div>' +
+            '<div class="flowchart-operator-outputs">' +
+                '<div class="flowchart-operator-connector-set">' +
+                    '<div class="flowchart-operator-connector">' +
+                        '<div class="flowchart-operator-connector-label">Export</div>' +
+                        '<div class="flowchart-operator-connector-arrow" onclick="drawLine(this)"></div>' +
+                        '<div class="flowchart-operator-connector-small-arrow"></div>' +
+                    '</div>' +
+                '</div>' +
+            '</div>' +
+        '</div>' + 
+        '<select name="nodeProperty" id="nodeProperty" onchange="changeProperty(this)" style="margin:5px auto 10px auto;">';
     var classification2 =
             '<option value="Logistic regression">Logistic regression</option>' +
             '<option value="Decision tree classifier">Decision tree classifier</option>' +
@@ -114,8 +139,15 @@ classification1 =
             '<option value="Gradient-boosted tree regression">Gradient-boosted tree regression</option>' +
         '</select>' +
         '<label for="field" style="margin-bottom:-3px;">Use column:</label>';
-    var classification3, regression3;
-    classification3 = regression3 = 
+    var datajoin2 = 
+            '<option value="Inner">Inner</option>' +
+            '<option value="Left">Left</option>' +
+            '<option value="Right">Right</option>' +
+            '<option value="Outer">Outer</option>' +
+        '</select>' +
+        '<label for="field" style="margin-bottom:-3px;">Use column:</label>';
+    var classification3, regression3, datajoin3;
+    classification3 = regression3 = datajoin3 =
     '</div>' +
 '</div>';
 

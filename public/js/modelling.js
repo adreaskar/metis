@@ -85,7 +85,7 @@ $(document).ready(function() {
 				position: ui.helper.position(),
 				property:ui.helper[0].children[1].innerHTML
 			};
-			if(node.property == "Classification" || node.property == "Regression" || node.property == "Cleaning" || node.property == "Data Ingestion") {
+			if(node.property == "Classification" || node.property == "Regression" || node.property == "Cleaning" || node.property == "Data Ingestion" || node.property == "Join Datasets") {
 				node.field = ''
 				if (node.property == "Data Ingestion") {
 					node.link = ''
@@ -93,6 +93,9 @@ $(document).ready(function() {
 				}
 				if(node.property == "Classification" || node.property == "Regression") {
 					node.property = "Select Algorithm"
+				}
+				if(node.property == "Join Datasets") {
+					node.property = "Select Join"
 				}
 			}
 			
@@ -123,11 +126,14 @@ $(document).ready(function() {
 				case "Data Ingestion":
 					html = ingestion1 + '<input type="text" name="field" class="form-control column" style="margin:auto auto 15px auto;width:80%;height:70%" onclick="editColumn(this)" value="'+node.field+'"></input>' + ingestion2 + '<input type="text" name="link" class="form-control column" style="margin:auto auto 15px auto;width:80%;height:70%" onclick="editColumn(this)" value="'+node.link+'"></input>' + ingestion3 + '<input type="text" name="token" class="form-control column" style="margin:auto auto 15px auto;width:80%;height:70%" onclick="editColumn(this)" value="'+node.token+'"></input>' + ingestion4;
 					break;
+				case "Join Datasets":
+					html = datajoin1 + '<option selected="true" disabled="disabled" value="default">'+node.property+'</option>' + datajoin2 + '<input type="text" name="field" class="form-control column" style="margin:auto auto 15px auto;width:80%;height:70%" onclick="editColumn(this)" value="'+node.field+'"></input>' + datajoin3;
+					break;
 				case "Classification":
-					html = classification1 + '<option selected="true" disabled="disabled" value="default">'+node.property+'</option>' + classification2 + '<input type="text" name="field" class="form-control column" style="margin:auto auto 15px auto;width:80%;height:70%" onclick="editColumn(this)" value="'+node.field+'"></input>' +  + classification3;
+					html = classification1 + '<option selected="true" disabled="disabled" value="default">'+node.property+'</option>' + classification2 + '<input type="text" name="field" class="form-control column" style="margin:auto auto 15px auto;width:80%;height:70%" onclick="editColumn(this)" value="'+node.field+'"></input>' + classification3;
 					break;
 				case "Regression":
-					html = regression1 + '<option selected="true" disabled="disabled" value="default">'+node.property+'</option>' + regression2 + '<input type="text" name="field" class="form-control column" style="margin:auto auto 15px auto;width:80%;height:70%" onclick="editColumn(this)" value="'+node.field+'"></input>' +  + regression3;
+					html = regression1 + '<option selected="true" disabled="disabled" value="default">'+node.property+'</option>' + regression2 + '<input type="text" name="field" class="form-control column" style="margin:auto auto 15px auto;width:80%;height:70%" onclick="editColumn(this)" value="'+node.field+'"></input>' + regression3;
 					break;
 				case "Cleaning":
 					html = cleaning1 + '<input type="number" step="0.01" min="0" max="1" name="field" class="form-control column" style="margin:auto auto 15px auto;width:80%;height:70%" onclick="editColumn(this)" value="'+node.field+'"></input>' + cleaning2;
@@ -214,13 +220,16 @@ $(document).ready(function() {
 			// by looping through all existing connections and 
 			// comparing node id's.
 			if (job.step === 1 || data.nodes[m].type === "Data Ingestion") job.from = 0;
+			if (data.nodes[m].type === "Join Datasets") job.from = [];
 			let countNotLast = 0
 			for (n in data.connections) {
 				if (data.connections[n].to === job.id) {
 					for (l in data.jobs) {
 						if (data.jobs[l].id === data.connections[n].from) {
 							data.jobs[l].next.push(job.step);
-							job.from = data.jobs[l].step;
+							if (data.nodes[m].type === "Join Datasets") {
+								job.from.push(data.jobs[l].step);
+							} else job.from = data.jobs[l].step;
 							countNotLast +=1 ;
 						}
 					}
@@ -233,13 +242,32 @@ $(document).ready(function() {
 				job.link = data.nodes[m].link;
 				job.token = data.nodes[m].token;
 				job["dataset-name"] = data.nodes[m].field;
+				if (job["dataset-name"] === "") {
+
+					let found = 1;
+					for (l in data.jobs) {
+						if (data.jobs[l].title === "data-ingestion") {
+							found +=1;
+						}
+					}
+
+					job["dataset-name"] = "dataset-" + found + "-" + data["analysis-id"];
+				}
+			}
+
+			// Properties specific to the Data Join job
+			if (data.nodes[m].type === "Join Datasets") {
+				job.title = "data-join";
+				job["join-type"] = data.nodes[m].property.toLowerCase();
+				if (job["join-type"] === "select join") job["join-type"] = "join";
+				job.column = data.nodes[m].field.toLowerCase(); 
 			}
 
 			// Properties specific to the Classification and Regression jobs
 			if (data.nodes[m].type === "Classification" || data.nodes[m].type === "Regression") {
 				job.algorithm = data.nodes[m].property.toLowerCase();
 				if (job.algorithm === "select algorithm") job.algorithm = false;
-				job.column = data.nodes[m].field.toLowerCase(); // Possible bug fix 
+				job.column = data.nodes[m].field.toLowerCase(); 
 			}
 
 			// Properties specific to the Cleaning job
@@ -632,10 +660,16 @@ function minimize() {
 function validateFields() {
 	let outcome = true;
 	for (m in diagram) {
-		if (diagram[m].type === "Classification" || diagram[m].type === "Regression") {
+		if (diagram[m].type === "Classification" || diagram[m].type === "Regression" || diagram[m].type === "Join Datasets") {
 			if (diagram[m].field === "") {
 				outcome = false;
 			};
+		}
+
+		if (diagram[m].type === "Data Ingestion") { 
+			if (diagram[m].link === "" || diagram[m].token === "") {
+				outcome = false;
+			}
 		}
 	}
 	return outcome;

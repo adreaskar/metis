@@ -8,22 +8,20 @@ const crypto = require("crypto");
 const http = require("http");
 const session = require('express-session');
 const fetch = require('node-fetch');
+const { MONGO_URL, PORT, ORCHESTRATOR_URL } = require("./config/config");
 
 // Database connection -------------------------------------------------------------------------------------
-
-//dev  mongodb://mongo::27017/
-//prod mongodb://10.20.20.98/
-mongoose.main = mongoose.createConnection(process.env.MONGO_URL + "metis");
+mongoose.main = mongoose.createConnection(MONGO_URL + "metis");
 
 const userSchema = require('./models/User');
 const User = mongoose.main.model("User", userSchema);
-
 // -----------------------------------------------------------------------------------------------------------
 
 const app = express();
 const server = http.createServer(app);
 const io = socketio(server);
 
+// Middleware ----------------
 app.set('view engine', 'ejs');
 app.use(bodyParser.urlencoded({extended:true}));
 app.use(express.static("public"));
@@ -32,7 +30,7 @@ app.use(session({
     resave:false,
     saveUninitialized:false,
     store:MongoStore.create({
-        mongoUrl: process.env.MONGO_URL+"metis",
+        mongoUrl: MONGO_URL+"metis",
         collection:'sessions'
     })
 }));
@@ -41,7 +39,12 @@ app.use(session({
 // Home route -----------------------------------------------------------------------------------------------------------
 app.route("/")
     .get((req,res) => {
-        res.render("index");
+
+        if (req.session.user) {
+            res.redirect("/modelling");
+        } else {
+            res.render("index");
+        }
     })
     .post((req,res) => {
         req.body.password = crypto.createHash('sha256').update(req.body.password).digest('hex');
@@ -55,7 +58,6 @@ app.route("/")
                     res.redirect("/");
                 } else {
 
-                    req.session.analysisid = Math.random().toString(16).slice(2);
                     req.session.user = req.body.username;
 
                     res.redirect("/modelling");
@@ -96,11 +98,18 @@ app.route("/logout")
 // Modelling route -----------------------------------------------------------------------------------------------------------
 app.route("/modelling")
 .get((req,res) => {
-    
-    const username = req.session.user;
-    const id = req.session.analysisid;
 
-    res.render("modelling", {user:username, id:id});
+    if (!req.session.user) {
+        res.redirect("/")
+    } else {
+        
+        req.session.analysisid = Math.random().toString(16).slice(2);
+
+        const username = req.session.user;
+        const id = req.session.analysisid;
+    
+        res.render("modelling", {user:username, id:id});
+    }
 });
 
 // Messaging route -----------------------------------------------------------------------------------------------------------
@@ -121,16 +130,14 @@ app.route("/messages")
         res.sendStatus(200);
     });
 
-const port = process.env.PORT || 5000;
-
-server.listen(port, function () {
+server.listen(PORT, function () {
     console.log('Started on port 5000');
 });
 
 io.on("connection", socket => {
     socket.on('send-to-orchestrator', data => {
 
-        fetch("http://10.20.20.85:5000/analysis", {
+        fetch(ORCHESTRATOR_URL, {
         	method: "POST",
         	headers: {'Content-Type': 'application/json'}, 
         	body: JSON.stringify(data)
