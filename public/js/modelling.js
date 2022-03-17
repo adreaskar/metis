@@ -294,7 +294,7 @@ $(document).ready(function() {
 			data.automodel = false;
 		}
 
-		delete data.nodes; // NODES WILL RETURN IN DEMO 2
+		//delete data.nodes; // NODES WILL RETURN IN METIS
 	}
 
 	// Load data
