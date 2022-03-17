@@ -3,5 +3,5 @@ Dockerfile
 .dockerignore
 .git
 .gitignore
-docker-compose*
 *.md
+docker

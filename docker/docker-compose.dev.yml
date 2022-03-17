@@ -12,6 +12,7 @@ services:
     volumes:
       - ./:/app:ro
       - /app/node_modules
+      - /app/docker/
     environment:
       - PORT=5000
       - MONGO_URL=mongodb://mongo:27017/
