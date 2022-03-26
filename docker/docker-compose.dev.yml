@@ -19,6 +19,7 @@ services:
       - ORCHESTRATOR_URL=http://10.20.20.85:5000/analysis
       - NODE_ENV=development
     command: npm run dev
+    restart: always
     depends_on:
       - "mongo"
 
@@ -29,6 +30,7 @@ services:
       - "27017:27017"
     volumes:
       - mongo-db:/data/db
+    restart: always
 
 volumes:
   mongo-db:

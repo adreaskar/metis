@@ -5,7 +5,8 @@
   "main": "app.js",
   "scripts": {
     "start": "node app.js",
-    "dev": "nodemon -L app.js"
+    "dev": "nodemon -L app.js",
+    "dockerup": "docker-compose --project-directory ./  -f ./docker/docker-compose.dev.yml up -d"
   },
   "author": "Andreas Karabetian",
   "license": "ISC",
