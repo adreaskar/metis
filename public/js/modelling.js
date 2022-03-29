@@ -361,7 +361,15 @@ $(document).ready(function() {
 		if (validateFields()) {
 			generateData();
 
-			socket.emit('send-to-orchestrator', data);
+			// Send data to backend
+			fetch("/messages", {
+				method: 'POST',
+				headers: {'Content-Type': 'application/json'},
+				body: JSON.stringify({message:"send-to-orchestrator", info:data})
+			})
+			.then(res => {
+				console.log("Data sent to backend", res);
+			});
 
 		} else {
 			toastr.error("Please fill all the fields requied.", "Notification:");

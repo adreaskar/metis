@@ -24,6 +24,7 @@ const io = socketio(server);
 // Middleware ----------------
 app.set('view engine', 'ejs');
 app.use(bodyParser.urlencoded({extended:true}));
+app.use(bodyParser.json()); 
 app.use(express.static("public"));
 app.use(session({
     secret:'diastema',
@@ -117,33 +118,36 @@ app.route("/messages")
     .post((req,res) => {
         let data = req.body;
 
-        // The orchestrator sends updates about finished jobs -----
-        if (data.message == "update") {
+        switch (data.message) {
 
-            io.sockets.emit("Modeller", data.update);
+            case "update":
+                io.sockets.emit("Modeller", data.update);
+                res.sendStatus(200);
+                break;
+            case "send-to-orchestrator":
+                console.log("Backend got the data");
 
-        // The orchestrator sends the message to begin visualization --------
-        } else if (data.message == "visualize") {
+                fetch(ORCHESTRATOR_URL, {
+                    method: "POST",
+                    headers: {'Content-Type': 'application/json'},
+                    body: JSON.stringify(data.info)
+                }).then(res => {
+                    console.log("Data sent to orchestrator!", res);
+                });
 
-            io.sockets.emit("Modeller", "Data ready for visualization, visit the Dashboard");
+                res.sendStatus(200); 
+                break;
+            case "visualize":
+                io.sockets.emit("Modeller", "Data ready for visualization, visit the Dashboard");
+                res.sendStatus(200); 
+                break;
+            default:
+                console.log("No data recieved");
+                res.sendStatus(500);
+                break;
         }
-        res.sendStatus(200);
     });
 
 server.listen(PORT, function () {
     console.log('Started on port 5000');
-});
-
-io.on("connection", socket => {
-    socket.on('send-to-orchestrator', data => {
-
-        fetch(ORCHESTRATOR_URL, {
-        	method: "POST",
-        	headers: {'Content-Type': 'application/json'}, 
-        	body: JSON.stringify(data)
-        }).then(res => {
-        	console.log("Data sent to orchestrator!", res);
-        });
-
-    })
 });
