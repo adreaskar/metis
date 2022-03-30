@@ -191,25 +191,25 @@ $(document).ready(function() {
 				"analysis-date": ('0'+d.getDate()).slice(-2) + "-" + ('0'+(d.getMonth()+1)).slice(-2) + "-" + d.getFullYear(), 
 				"analysis-time": ('0'+d.getHours()).slice(-2) + ":" + ('0'+d.getMinutes()).slice(-2) + ":" + ('0'+d.getSeconds()).slice(-2) + ":" + d.getMilliseconds()
 			},
-			"nodes1":[],
-			"connections1":[]
+			"nodes":[],
+			"connections":[]
 		};
 
 		// Get nodes -------------------
 		for (l in diagram) {
-			data.nodes1.push(diagram[l]);
+			data.nodes.push(diagram[l]);
 		}
 		// Get connections ----------------------
 		for (k in linesArray) {
-			data.connections1.push(linesArray[k]);
+			data.connections.push(linesArray[k]);
 		}
 		// Create jobs array --
-		for (m in data.nodes1) {
+		for (m in data.nodes) {
 
 			// Job template
 			let job = {
-				"title":data.nodes1[m].type.replace(/\s+/g, '-').toLowerCase(),
-				"id":data.nodes1[m]._id,
+				"title":data.nodes[m].type.replace(/\s+/g, '-').toLowerCase(),
+				"id":data.nodes[m]._id,
 				"step":parseInt(m)+1,
 				"from":'',
 				"next":[],
@@ -219,15 +219,15 @@ $(document).ready(function() {
 			// Calculate the next / from properties of every node
 			// by looping through all existing connections and 
 			// comparing node id's.
-			if (job.step === 1 || data.nodes1[m].type === "Data Ingestion") job.from = 0;
-			if (data.nodes1[m].type === "Join Datasets") job.from = [];
+			if (job.step === 1 || data.nodes[m].type === "Data Ingestion") job.from = 0;
+			if (data.nodes[m].type === "Join Datasets") job.from = [];
 			let countNotLast = 0
-			for (n in data.connections1) {
-				if (data.connections1[n].to === job.id) {
+			for (n in data.connections) {
+				if (data.connections[n].to === job.id) {
 					for (l in data.jobs) {
-						if (data.jobs[l].id === data.connections1[n].from) {
+						if (data.jobs[l].id === data.connections[n].from) {
 							data.jobs[l].next.push(job.step);
-							if (data.nodes1[m].type === "Join Datasets") {
+							if (data.nodes[m].type === "Join Datasets") {
 								job.from.push(data.jobs[l].step);
 							} else job.from = data.jobs[l].step;
 							countNotLast +=1 ;
@@ -237,11 +237,11 @@ $(document).ready(function() {
 			}
 
 			// Properties specific to the Data Ingestion job
-			if (data.nodes1[m].type === "Data Ingestion") {
+			if (data.nodes[m].type === "Data Ingestion") {
 				job.method = "GET";
-				job.link = data.nodes1[m].link;
-				job.token = data.nodes1[m].token;
-				job["dataset-name"] = data.nodes1[m].field;
+				job.link = data.nodes[m].link;
+				job.token = data.nodes[m].token;
+				job["dataset-name"] = data.nodes[m].field;
 				if (job["dataset-name"] === "") {
 
 					let found = 1;
@@ -256,26 +256,26 @@ $(document).ready(function() {
 			}
 
 			// Properties specific to the Data Join job
-			if (data.nodes1[m].type === "Join Datasets") {
+			if (data.nodes[m].type === "Join Datasets") {
 				job.title = "data-join";
-				job["join-type"] = data.nodes1[m].property.toLowerCase();
+				job["join-type"] = data.nodes[m].property.toLowerCase();
 				if (job["join-type"] === "select join") job["join-type"] = "join";
-				job.column = data.nodes1[m].field.toLowerCase(); 
+				job.column = data.nodes[m].field.toLowerCase(); 
 			}
 
 			// Properties specific to the Classification and Regression jobs
-			if (data.nodes1[m].type === "Classification" || data.nodes1[m].type === "Regression") {
-				job.algorithm = data.nodes1[m].property.toLowerCase();
+			if (data.nodes[m].type === "Classification" || data.nodes[m].type === "Regression") {
+				job.algorithm = data.nodes[m].property.toLowerCase();
 				if (job.algorithm === "select algorithm") job.algorithm = false;
-				job.column = data.nodes1[m].field.toLowerCase(); 
+				job.column = data.nodes[m].field.toLowerCase(); 
 			}
 
 			// Properties specific to the Cleaning job
-			if (data.nodes1[m].type == "Cleaning") {
-				if (data.nodes1[m].field === "") {
+			if (data.nodes[m].type == "Cleaning") {
+				if (data.nodes[m].field === "") {
 					job["max-shrink"] = false;
 				} else {
-					job["max-shrink"] = parseFloat(data.nodes1[m].field);
+					job["max-shrink"] = parseFloat(data.nodes[m].field);
 				}
 			}
 
@@ -294,7 +294,9 @@ $(document).ready(function() {
 			data.automodel = false;
 		}
 
-		//delete data.nodes; // NODES WILL RETURN IN METIS
+		// These do not work with orchestrator
+		delete data.nodes;
+		delete data.connections;
 	}
 
 	// Load data
