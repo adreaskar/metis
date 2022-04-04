@@ -225,8 +225,12 @@ body {
   right: 0;
 }
 
-.dropdown-item:hover {
+#notif-list .dropdown-item:hover {
   background-color: rgba(0, 0, 0, 0.027) !important;
+}
+
+#profileDropdown .dropdown-item:hover {
+  background-color: rgb(245, 245, 245) !important;
 }
 
 #profileDropdownMenu:hover, #profileDropdownMenu:hover i, #navbarNotification:hover, #navbarNotification:hover i{
@@ -439,6 +443,13 @@ button:hover {
   background-color: #33809e!important;
 }
 
+.btn-close {
+  background-color: transparent !important;
+}
+.btn-close:hover {
+  background-color: transparent !important;
+}
+
 #nodeProperty {
   border-color: #d1d1d1;
   border-radius: 4px;
@@ -517,12 +528,17 @@ input:checked + .slider:before {
 .slider.round:before {
   border-radius: 50%;
 }
-
 /* End Switch */
 
 .resizeDel {
   justify-content: center!important;
   padding: 8px 10px!important;
+}
+
+.dropdown-menu {
+  border-radius: 3px;
+  border-top-left-radius: 0;
+  border-top-right-radius: 0;
 }
 
 @media screen and (max-width: 1500px) {

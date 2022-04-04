@@ -58,7 +58,7 @@ socket.on('Modeller', (update) => {
 });
 
 // Reset bell counter
-$('#navbarNotification').click(function() {
+$('#navbarNotification').click(() => {
 	$('#alerts').empty();
 	i=0;
 });
@@ -294,69 +294,71 @@ $(document).ready(function() {
 			data.automodel = false;
 		}
 
-		// These do not work with orchestrator
-		delete data.nodes;
-		delete data.connections;
+		// Testing if nodes / connections work again
+		// delete data.nodes;
+		// delete data.connections;
 	}
 
 	// Load data
-	$('#load_data').click(()=>{
+	
+	// $('#save_data').click(()=>{
 		
-		let data = $("#flowchart_data").val();
+	// 	let data = $("#flowchart_data").val();
 
-		try {
-			data = jQuery.parseJSON(data);
+	// 	try {
+	// 		data = jQuery.parseJSON(data);
 
-			// Make nodes ---------------
-			for (i in data.nodes) {
-				let node = data.nodes[i];
-				diagram.push(node);
-			}
-			renderDiagram(diagram);
+	// 		// Make nodes ---------------
+	// 		for (i in data.nodes) {
+	// 			let node = data.nodes[i];
+	// 			diagram.push(node);
+	// 		}
+	// 		renderDiagram(diagram);
 
-			// Make lines ----------------------------------------------------------------------
-			for (o in data.connections) {
-				let line = data.connections[o];
+	// 		// Make lines ----------------------------------------------------------------------
+	// 		for (o in data.connections) {
+	// 			let line = data.connections[o];
 
-				let fromChildren = $('#'+line.from).find(".flowchart-operator-connector-arrow");
-				let toChildren = $('#'+line.to).find(".flowchart-operator-connector-arrow");
+	// 			let fromChildren = $('#'+line.from).find(".flowchart-operator-connector-arrow");
+	// 			let toChildren = $('#'+line.to).find(".flowchart-operator-connector-arrow");
 
-				let newLine = new LeaderLine(
-					LeaderLine.pointAnchor(fromChildren[0]),
-					LeaderLine.pointAnchor(toChildren[0]),
-					{
-						startPlug: 'disc',
-						endPlug: 'disc',
-						startPlugColor: '#3a91b3',
-						endPlugColor:'#3a91b3',
-						startPlugSize: 0.7,
-						endPlugSize: 0.7,
-						color:'#3a91b3',
-						startSocket:'right',
-						endSocket:'left',
-						size: 5
-					}
-				);
+	// 			let newLine = new LeaderLine(
+	// 				LeaderLine.pointAnchor(fromChildren[0]),
+	// 				LeaderLine.pointAnchor(toChildren[0]),
+	// 				{
+	// 					startPlug: 'disc',
+	// 					endPlug: 'disc',
+	// 					startPlugColor: '#3a91b3',
+	// 					endPlugColor:'#3a91b3',
+	// 					startPlugSize: 0.7,
+	// 					endPlugSize: 0.7,
+	// 					color:'#3a91b3',
+	// 					startSocket:'right',
+	// 					endSocket:'left',
+	// 					size: 5
+	// 				}
+	// 			);
 		
-				newLine["from"] = line.from;
-				newLine["to"] = line.to;
+	// 			newLine["from"] = line.from;
+	// 			newLine["to"] = line.to;
 		
-				linesArray.push(newLine);
-			}
+	// 			linesArray.push(newLine);
+	// 		}
 
-			// Tick automodel if needed -------------
-			if (data.automodel === true) {
-				$("#checkbox").prop("checked", true);
-			}
+	// 		// Tick automodel if needed -------------
+	// 		if (data.automodel === true) {
+	// 			$("#checkbox").prop("checked", true);
+	// 		}
 
-			$('#diagrambtn').removeClass("active");
-			$("#diagram").collapse('toggle');
-			renderDiagram(diagram);
-		} catch (e) {
-			alert('Please insert valid JSON format.')
-			return false;
-		}
-	});
+	// 		$('#diagrambtn').removeClass("active");
+	// 		$("#diagram").collapse('toggle');
+	// 		renderDiagram(diagram);
+	// 	} catch (e) {
+	// 		toastr.error("Please insert valid JSON format.", "Notification:");
+	// 		return false;
+	// 	}
+	// });
+
 
 	// Send data
 	$('#send_data').click(()=>{
