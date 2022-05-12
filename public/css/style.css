@@ -443,10 +443,10 @@ button:hover {
   background-color: #33809e!important;
 }
 
-.btn-close {
+.btn-close, .toast-close-button {
   background-color: transparent !important;
 }
-.btn-close:hover {
+.btn-close:hover, .toast-close-button:hover {
   background-color: transparent !important;
 }
 
