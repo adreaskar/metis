@@ -238,15 +238,34 @@
                             <div class="inline">
                                 <button type="button" class="btn btn-primary" id="save_data" data-mdb-toggle="modal" data-mdb-target="#saveGraphModal" data-mdb-ripple-duration="0s">Save Graph</button>
                             </div>
+                            
+                            <!-- Save Graph Modal -->
+                            <div class="modal top fade" id="saveGraphModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true" data-mdb-backdrop="true" data-mdb-keyboard="true">
+                                <div class="modal-dialog   modal-dialog-centered">
+                                    <div class="modal-content">
+                                        <div class="modal-header">
+                                            <h5 class="modal-title" id="exampleModalLabel">Store the graph for later use</h5>
+                                            <button type="button" class="btn-close" data-mdb-dismiss="modal" aria-label="Close"></button>
+                                        </div>
+                                        <div class="modal-body" style="margin-top: 10px;margin-bottom: 10px;">
+                                            <input class="form-control" id="save_graph_input" type="text" placeholder="Enter analysis name" aria-label="default input example">
+                                        </div>
+                                        <div class="modal-footer">
+                                            <button id="save_graph" type="button" class="btn btn-primary">Save graph</button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+  
 
-                            <!-- Send Data -->
+                            <!-- Deploy Graph -->
                             <div class="inline">
-                                <button type="button" class="set_data btn btn-primary" id="send_data">Send data</button>
+                                <button type="button" class="set_data btn btn-primary" id="deploy_graph" data-mdb-ripple-duration="0s">Deploy Graph</button>
                             </div>
 
-                            <!-- Download Data -->
+                            <!-- Download Graph -->
                             <div class="inline">
-                                <button type="button" class="set_data btn btn-primary" id="set_data">
+                                <button type="button" class="set_data btn btn-primary" id="download_graph" data-mdb-ripple-duration="0s">
                                     <i class="fas fa-download" style="font-size: 15px;"></i>
                                 </button>
                             </div>
@@ -267,6 +286,23 @@
 
                 <footer style="text-align:center;margin-bottom: 13px;">
                     <span style="font-size: 14px;">Diastema © 2020 - <script>document.write(new Date().getFullYear())</script></span>
+
+                    <div style="position:absolute;display: flex;right: 20px;bottom: 5%;">
+                        <!-- Zoom -->
+                        <div class="inline">
+                            <button id="zoomcanvas" type="button" class="btn btn-primary" style="padding:4px 7px 0px 7px;margin: 0;" data-mdb-ripple-duration="0s">
+                                <span class="material-icons" style="color: white;">zoom_in</span>
+                            </button>
+                        </div>
+
+                        <!-- Unzoom -->
+                        <div class="inline">
+                            <button id="unzoomcanvas" type="button" class="btn btn-primary" style="padding:4px 7px 0px 7px;margin: 0;" data-mdb-ripple-duration="0s">
+                                <span class="material-icons" style="color: white">zoom_out</span>
+                            </button>
+                        </div>
+                    </div>
+
                 </footer>
             </div>
         </div>

@@ -1,10 +1,7 @@
 var diagram = [];
 var linesArray = [];
 
-var $operatorProperties = $('#operator_properties');
-var $deletebutton = $("#delete_node");
-$operatorProperties.hide();
-$deletebutton.hide();
+$("#delete_node").hide();
 
 // Send notification when receiving message from orchestrator //
 const socket = io.connect();
@@ -136,7 +133,7 @@ $(document).ready(function() {
 					html = regression1 + '<option selected="true" disabled="disabled" value="default">'+node.property+'</option>' + regression2 + '<input type="text" name="field" class="form-control column" style="margin:auto auto 15px auto;width:80%;height:70%" onclick="editColumn(this)" value="'+node.field+'"></input>' + regression3;
 					break;
 				case "Cleaning":
-					html = cleaning1 + '<input type="number" step="0.01" min="0" max="1" name="field" class="form-control column" style="margin:auto auto 15px auto;width:80%;height:70%" onclick="editColumn(this)" value="'+node.field+'"></input>' + cleaning2;
+					html = cleaning1 + '<input type="text" inputmode="numeric" name="field" class="form-control column" style="margin:auto auto 15px auto;width:80%;height:70%" onclick="editColumn(this)" value="'+node.field+'"></input>' + cleaning2;
 					break;
 				default:
 					break;
@@ -299,6 +296,29 @@ $(document).ready(function() {
 		// delete data.connections;
 	}
 
+	// Save graph to application
+	$('#save_graph').click(()=>{
+
+		if ($("#save_graph_input").val() === "") {
+			toastr.error("Please give a name to your analysis graph.", "Notification:");
+		} else {
+			generateData();
+		
+			data['analysis-name'] = $("#save_graph_input").val();
+
+			fetch("/messages", {
+				method: 'POST',
+				headers: {'Content-Type': 'application/json'},
+				body: JSON.stringify({message:"save-graph", info:data})
+			})
+
+			$("#save_graph_input").val("")
+			$('#saveGraphModal').modal('hide');
+
+			toastr.success("Graph was saved successfully.", "Notification:");
+		}
+	});
+
 	// Load data
 	
 	// $('#save_data').click(()=>{
@@ -360,8 +380,8 @@ $(document).ready(function() {
 	// });
 
 
-	// Send data
-	$('#send_data').click(()=>{
+	// Deploy graph
+	$('#deploy_graph').click(()=>{
 		if (validateFields()) {
 			generateData();
 
@@ -376,18 +396,71 @@ $(document).ready(function() {
 			});
 
 		} else {
-			toastr.error("Please fill all the fields requied.", "Notification:");
+			toastr.error("Please fill all the requied fields.", "Notification:");
 		}
 	});
 
-	// Download data
-	$('#set_data').click(()=>{
+	// Download graph
+	$('#download_graph').click(()=>{
 		if (validateFields()) {
 			generateData();
 			download(JSON.stringify(data, null, 2), "data.json", "text/plain");
 		} else {
-			toastr.error("Please fill all the fields requied.", "Notification:");
+			toastr.error("Please fill all the requied fields.", "Notification:");
 		}
+	});
+
+	// Unzoom canvas
+	let scale = 1.0
+	$('#unzoomcanvas').click(() => {
+
+		let newscale = 0;
+
+		$("#flowchartworkspace").children('.ui-draggable').each((i, obj) => {
+			let target = $(obj);
+
+			target.css('transform', 'scale('+scale+')')
+			newscale = scale - 0.13
+			newscale.toFixed(2)
+			if (newscale >= 0.6) {
+				target.css('transform', 'scale('+newscale+')');
+			}
+		});
+		
+		if (newscale >= 0.6) {
+			scale = newscale;
+			reDraw()
+		} else {
+			toastr.error("Max zoom out reached.", "Notification:");
+		}
+		console.log(scale);
+	});
+
+	// Zoom canvas
+	$('#zoomcanvas').click(() => {
+
+		let newscale = 0;
+
+		$("#flowchartworkspace").children('.ui-draggable').each((i, obj) => {
+			let target = $(obj);
+
+			target.css('transform', 'scale('+scale+')');
+			newscale = scale + 0.13
+			console.log("scale",newscale);
+			newscale.toFixed(2)
+			if (newscale <= 1.5) {
+				target.css('transform', 'scale('+newscale+')');
+			}
+		});
+
+		if (newscale <= 1.5) {
+			scale = newscale;
+			reDraw()
+		} else {
+			toastr.error("Max zoom in reached.", "Notification:");
+		}
+		console.log(scale);
+		
 	});
 
 	// Go to dashboard button
@@ -502,10 +575,10 @@ function editNode(element) {
 
 	// Click on title to show delete
 	try {
-		$('#'+elemid).click(function(event){
+		$("#"+elemid).click(function(event){
 			event.stopPropagation();
 			// $operatorProperties.show();
-			$deletebutton.show();
+			$("#delete_node").show();
 		});
 	} catch(err) {
 		console.log(err);
@@ -567,6 +640,10 @@ function editColumn(element) {
 				diagram[s].field = $(this).val();
 				// Cleaning service max shrink validation check ---------------------------- //
 				if (diagram[s].property === "Cleaning") {
+					if (isNaN($(this).val())) {
+						toastr.error("Please enter a numeric value between 0 and 1.", "Notification:");
+						$(this).val("")
+					}
 					if ($(this).val() < 0 || $(this).val()> 1) {
 						toastr.error("Please enter a value between 0 and 1.", "Notification:");
 						$(this).val("")
@@ -689,7 +766,7 @@ function validateFields() {
 
 // Click anywhere to hide node delete btn
 $('html').click(function() {
-	$deletebutton.hide();
+	$("#delete_node").hide();
 	tobedeleted = [];
 
 	console.log(diagram);

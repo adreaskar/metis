@@ -15,6 +15,9 @@ mongoose.main = mongoose.createConnection(MONGO_URL + "metis");
 
 const userSchema = require('./models/User');
 const User = mongoose.main.model("User", userSchema);
+
+const graphSchema = require('./models/Graph');
+const Graph = mongoose.main.model("Graph", graphSchema, "graphs");
 // -----------------------------------------------------------------------------------------------------------
 
 const app = express();
@@ -55,7 +58,7 @@ app.route("/")
                 console.log(err);
             } else {
                 if (data.length === 0) {
-                    console.log('no user found');
+                    console.log('[INFO] No user found');
                     res.redirect("/");
                 } else {
 
@@ -125,24 +128,41 @@ app.route("/messages")
                 res.sendStatus(200);
                 break;
             case "send-to-orchestrator":
-                console.log("Backend got the data");
+                console.log("[INFO] Backend got the data");
 
                 fetch(ORCHESTRATOR_URL, {
                     method: "POST",
                     headers: {'Content-Type': 'application/json'},
                     body: JSON.stringify(data.info)
                 }).then(res => {
-                    console.log("Data sent to orchestrator!", res);
+                    console.log("[INFO] Data sent to orchestrator!", res);
                 });
 
                 res.sendStatus(200); 
+                break;
+            case "save-graph":
+
+                const graph = new Graph ({
+                    user: data.info.metadata.user,
+                    name: data.info["analysis-name"],
+                    analysisid: data.info["analysis-id"],
+                    datetime: data.info["analysis-datetime"],
+                    jobs: data.info.jobs,
+                    nodes: data.info.nodes,
+                    connections: data.info.connections
+                });
+        
+                graph.save()
+
+                console.log("[INFO] Graph saved to MongoDB");
+
                 break;
             case "visualize":
                 io.sockets.emit("Modeller", "Data ready for visualization, visit the Dashboard");
                 res.sendStatus(200); 
                 break;
             default:
-                console.log("No data recieved");
+                console.log("[INFO] No data recieved");
                 res.sendStatus(500);
                 break;
         }
