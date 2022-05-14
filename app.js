@@ -129,7 +129,6 @@ app.route("/ingestion")
 
         // Data structure 
         const data = {
-            "message":"save-dataset",
             "ingestion-datetime": datetime,
             "diastema-token": "diastema-key",
             "ingestion-id": id.toLowerCase(),
@@ -154,8 +153,6 @@ app.route("/ingestion")
         });
         dataset.save()
         console.log("[INFO] Dataset information saved to MongoDB!");
-  
-        delete data.message;
 
         // Send data to Orchestrator
         fetch(ORCHESTRATOR_URL, {
