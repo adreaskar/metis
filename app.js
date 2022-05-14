@@ -45,7 +45,7 @@ app.route("/")
     .get((req,res) => {
 
         if (req.session.user) {
-            res.redirect("/modelling");
+            res.redirect("/ingestion");
         } else {
             res.render("index");
         }
@@ -64,7 +64,7 @@ app.route("/")
 
                     req.session.user = req.body.username;
 
-                    res.redirect("/modelling");
+                    res.redirect("/ingestion");
                 }
             }
         });
@@ -97,6 +97,32 @@ app.route("/logout")
             if (err) throw err;
             res.redirect("/")
         });
+    });
+
+// Data Ingestion route -----------------------------------------------------------------------------------------------------------
+app.route("/ingestion")
+    .get((req,res) => {
+
+        if (!req.session.user) {
+            res.redirect("/")
+        } else {
+
+            req.session.ingestionid = Math.random().toString(16).slice(2);
+            const id = req.session.ingestionid;
+
+            res.render("ingestion", {id:id});
+        }
+
+    })
+    .post((req,res) => {
+
+        req.session.usecase = req.body.usecase;
+        req.session.source = req.body.source;
+        req.session.label = req.body.label;
+        req.session.analysisid = Math.random().toString(16).slice(2);
+        req.session.filename = req.files.inpFile.name;
+
+        res.redirect("/modelling");
     });
 
 // Modelling route -----------------------------------------------------------------------------------------------------------
