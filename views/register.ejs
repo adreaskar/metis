@@ -33,29 +33,53 @@
 
         <h2 style="margin:100px auto auto auto">Register</h2>
 
-        <form style="width:60%;margin:20px auto 100px auto;" id="form" method="POST" action="/register">
-            <!-- Username input -->
-            <div class="form-outline mb-4" style="background-color: white;">
-                <input type="text" class="form-control" name="username" required/ >
-                <label class="form-label" for="typeText">Username</label>
-            </div>
-            <!-- Email address -->
-            <div class="form-outline mb-4" style="background-color: white;">
-                <input type="email" class="form-control" name="email" required/ >
-                <label class="form-label" for="typeText">Email address</label>
-            </div>
-            <!-- Password input -->
-            <div class="form-outline mb-4" style="background-color: white;">
-                <input type="password" class="form-control" name="password" required/ >
-                <label class="form-label" for="typeText">Password</label>
+        <form style="width:80%;margin:50px auto 100px auto;" id="form" method="POST" action="/register">
+
+            <div class="row mb-4">
+                <!-- Label input -->
+                <div class="col">
+                    <!-- Username input -->
+                    <div class="form-outline mb-4">
+                        <input type="text" class="form-control" name="username" required/ >
+                        <label class="form-label" for="typeText">Username</label>
+                    </div>
+                </div>
+                
+                <div class="col">
+                    <!-- Email address -->
+                    <div class="form-outline mb-4">
+                        <input type="email" class="form-control" name="email" required/ >
+                        <label class="form-label" for="typeText">Email address</label>
+                    </div>
+                </div>
             </div>
 
-            <label for="property">Register as:</label><br>
-            <select name="property" id="property" style="border-color: #d1d1d1;border-radius: 4px;padding: 5px;width: 100%;" required>
-                <option selected="true" disabled="disabled" value="">Please choose a property</option>
-                <option value="analyst">Business Analyst</option>
-                <option value="scientist">Data Scientist</option>
-            </select>
+            <div class="row mb-4">
+                <!-- Label input -->
+                <div class="col">
+                    <!-- Password input -->
+                    <div class="form-outline mb-4">
+                        <input type="password" class="form-control" name="password" required/ >
+                        <label class="form-label" for="typeText">Password</label>
+                    </div>
+                </div>
+                
+                <div class="col">
+                    <!-- Organization  -->
+                    <div class="form-outline mb-4">
+                        <input type="text" class="form-control" name="organization" required/ >
+                        <label class="form-label" for="typeText">Organization</label>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col">
+                <select name="property" id="property" class="form-select" style="background-color: transparent;" required>
+                    <option selected disabled>Register as:</option>
+                    <option value="analyst">Business Analyst</option>
+                    <option value="scientist">Data Scientist</option>
+                </select>
+            </div>
             <br><br>
 
             <!-- Submit button -->
