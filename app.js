@@ -11,7 +11,7 @@ const fetch = require('node-fetch');
 const { MONGO_URL, PORT, ORCHESTRATOR_URL } = require("./config/config");
 
 // Database connection -------------------------------------------------------------------------------------
-mongoose.main = mongoose.createConnection(MONGO_URL + "diastemaDB");
+mongoose.main = mongoose.createConnection(MONGO_URL + "UIDB");
 
 const userSchema = require('./models/User');
 const User = mongoose.main.model("User", userSchema);
@@ -34,7 +34,7 @@ app.use(session({
     resave:false,
     saveUninitialized:false,
     store:MongoStore.create({
-        mongoUrl: MONGO_URL+"diastemaDB",
+        mongoUrl: MONGO_URL+"UIDB",
         collection:'sessions'
     })
 }));
