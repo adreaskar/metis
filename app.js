@@ -66,6 +66,7 @@ app.route("/")
                 } else {
 
                     req.session.user = req.body.username;
+                    req.session.organization = data[0].organization;
 
                     res.redirect("/ingestion");
                 }
@@ -85,6 +86,7 @@ app.route("/register")
             username: req.body.username,
             email: req.body.email,
             password: req.body.password,
+            organization: req.body.organization,
             property: req.body.property
         });
 
@@ -131,7 +133,7 @@ app.route("/ingestion")
             "ingestion-datetime": datetime,
             "diastema-token": "diastema-key",
             "ingestion-id": id.toLowerCase(),
-            "database-id": "metis", // make lowercase
+            "database-id": req.session.organization.toLowerCase(),
             "method": req.body.method,
             "link": req.body.link,
             "token": req.body.token,
@@ -156,13 +158,13 @@ app.route("/ingestion")
         delete data.message;
 
         // Send data to Orchestrator
-        // fetch(ORCHESTRATOR_URL, {
-        //     method: "POST",
-        //     headers: {'Content-Type': 'application/json'},
-        //     body: JSON.stringify(data)
-        // }).then(res => {
-        //     console.log("[INFO] Ingestion data sent to orchestrator!", res);
-        // });
+        fetch(ORCHESTRATOR_URL, {
+            method: "POST",
+            headers: {'Content-Type': 'application/json'},
+            body: JSON.stringify(data)
+        }).then(res => {
+            console.log("[INFO] Ingestion data sent to orchestrator!", res);
+        });
 
         res.redirect("/modelling");
     });
