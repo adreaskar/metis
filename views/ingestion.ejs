@@ -6,6 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Diastema | Data Ingestion</title>
     
+    <link rel="stylesheet" href="css/jquery-ui.css">
     <link rel="stylesheet" href="css/style.css">
     <!-- jQuery -->
     <link rel="stylesheet" href="css/jquery-ui.css">
@@ -35,34 +36,38 @@
 
         <h2 style="margin:100px auto auto auto">Provide your dataset</h2>
 
-        <form style="width:80%;margin:50px auto 100px auto;" id="form" method="POST" action="/ingestion" enctype=multipart/form-data>
+        <form style="width:80%;margin:50px auto 100px auto;" id="form" method="POST" action="/ingestion">
             <!-- File input -->
-            <div class="form-outline mb-4">
-                <!-- <input type="file" name="inpFile" multiple> -->
-                <input type="file" class="form-control" name="inpFile" multiple required>
-                
-            </div>
+            <!-- <div class="form-outline mb-4">
+                <input type="file" class="form-control" name="inpFile" multiple>
+            </div> -->
 
             <div class="row mb-4">
-                <!-- Source input -->
+                <!-- Label input -->
                 <div class="col">
                   <div class="form-outline">
-                    <input type="text" class="form-control" name="source" / >
-                    <label class="form-label" for="typeText">Dataset source</label>
+                    <input type="text" class="form-control" name="label" / >
+                    <label class="form-label" for="typeText">Dataset label</label>
                   </div>
                 </div>
-                <!-- Usecase input -->
+                <!-- Http method input -->
                 <div class="col">
-                  <div class="form-outline">
-                    <input type="text" class="form-control" name="usecase" / >
-                    <label class="form-label" for="typeText">Dataset usecase</label>
-                  </div>
+                    <select name="method" id="method" class="form-select" style="background-color: transparent;">
+                        <option selected disabled>Http Method</option>
+                        <option value="GET">GET</option>
+                        <option value="POST">POST</option>
+                    </select>
                 </div>
             </div>
             
             <div class="form-outline mb-4">
-                <input type="text" class="form-control" name="label" / >
-                <label class="form-label" for="typeText">Analysis label</label>
+                <input type="text" class="form-control" name="link" / >
+                <label class="form-label" for="typeText">Remote link</label>
+            </div>
+
+            <div class="form-outline mb-4">
+                <input type="text" class="form-control" name="token" / >
+                <label class="form-label" for="typeText">Token</label>
             </div>
             
             <br>
