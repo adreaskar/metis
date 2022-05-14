@@ -18,6 +18,9 @@ const User = mongoose.main.model("User", userSchema);
 
 const graphSchema = require('./models/Graph');
 const Graph = mongoose.main.model("Graph", graphSchema, "graphs");
+
+const datasetSchema = require('./models/Dataset');
+const Dataset = mongoose.main.model("Dataset", datasetSchema, "datasets");
 // -----------------------------------------------------------------------------------------------------------
 
 const app = express();
@@ -106,21 +109,60 @@ app.route("/ingestion")
         if (!req.session.user) {
             res.redirect("/")
         } else {
-
-            req.session.ingestionid = Math.random().toString(16).slice(2);
-            const id = req.session.ingestionid;
-
-            res.render("ingestion", {id:id});
+            res.render("ingestion");
         }
 
     })
     .post((req,res) => {
 
-        req.session.usecase = req.body.usecase;
-        req.session.source = req.body.source;
-        req.session.label = req.body.label;
-        req.session.analysisid = Math.random().toString(16).slice(2);
-        req.session.filename = req.files.inpFile.name;
+        // Generate ingestion id
+        const id = Math.random().toString(16).slice(2);
+
+        // Create datetime
+        const d = new Date();
+        const date = ('0'+d.getDate()).slice(-2) + "-" + ('0'+(d.getMonth()+1)).slice(-2) + "-" + d.getFullYear();
+        const time = ('0'+d.getHours()).slice(-2) + ":" + ('0'+d.getMinutes()).slice(-2) + ":" + ('0'+d.getSeconds()).slice(-2) + ":" + d.getMilliseconds()
+
+        const datetime = date + " " + time;
+
+        // Data structure 
+        const data = {
+            "message":"save-dataset",
+            "ingestion-datetime": datetime,
+            "diastema-token": "diastema-key",
+            "ingestion-id": id.toLowerCase(),
+            "database-id": "metis", // make lowercase
+            "method": req.body.method,
+            "link": req.body.link,
+            "token": req.body.token,
+            "dataset-label": req.body.label.toLowerCase(),
+            "user": req.session.user
+        }
+
+        // Save data to MongoDB
+        const dataset = new Dataset ({
+            label: data["dataset-label"],
+            ingestationId: data["ingestion-id"],
+            ingestionDateTime: data["ingestion-datetime"],
+            organization: data["database-id"],
+            user: data.user,
+            method: data.method,
+            link: data.link,
+            token: data.token
+        });
+        dataset.save()
+        console.log("[INFO] Dataset information saved to MongoDB!");
+  
+        delete data.message;
+
+        // Send data to Orchestrator
+        // fetch(ORCHESTRATOR_URL, {
+        //     method: "POST",
+        //     headers: {'Content-Type': 'application/json'},
+        //     body: JSON.stringify(data)
+        // }).then(res => {
+        //     console.log("[INFO] Ingestion data sent to orchestrator!", res);
+        // });
 
         res.redirect("/modelling");
     });
@@ -153,6 +195,7 @@ app.route("/messages")
                 io.sockets.emit("Modeller", data.update);
                 res.sendStatus(200);
                 break;
+
             case "send-to-orchestrator":
                 console.log("[INFO] Backend got the data");
 
@@ -161,11 +204,12 @@ app.route("/messages")
                     headers: {'Content-Type': 'application/json'},
                     body: JSON.stringify(data.info)
                 }).then(res => {
-                    console.log("[INFO] Data sent to orchestrator!", res);
+                    console.log("[INFO] Graph data sent to orchestrator!", res);
                 });
 
                 res.sendStatus(200); 
                 break;
+
             case "save-graph":
 
                 const graph = new Graph ({
@@ -183,10 +227,12 @@ app.route("/messages")
                 console.log("[INFO] Graph saved to MongoDB");
 
                 break;
+            
             case "visualize":
                 io.sockets.emit("Modeller", "Data ready for visualization, visit the Dashboard");
                 res.sendStatus(200); 
                 break;
+
             default:
                 console.log("[INFO] No data recieved");
                 res.sendStatus(500);
