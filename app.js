@@ -111,7 +111,10 @@ app.route("/ingestion")
         if (!req.session.user) {
             res.redirect("/")
         } else {
-            res.render("ingestion");
+
+            const username = req.session.user;
+
+            res.render("ingestion", {user:username});
         }
 
     })
