@@ -8,7 +8,7 @@ const crypto = require("crypto");
 const http = require("http");
 const session = require('express-session');
 const fetch = require('node-fetch');
-const { MONGO_URL, PORT, ORCHESTRATOR_URL } = require("./config/config");
+const { MONGO_URL, PORT, ORCHESTRATOR_URL, ORCHESTRATOR_INGESTION_URL } = require("./config/config");
 
 // Database connection -------------------------------------------------------------------------------------
 mongoose.main = mongoose.createConnection(MONGO_URL + "UIDB");
@@ -158,7 +158,7 @@ app.route("/ingestion")
         console.log("[INFO] Dataset information saved to MongoDB!");
 
         // Send data to Orchestrator
-        fetch(ORCHESTRATOR_URL, {
+        fetch(ORCHESTRATOR_INGESTION_URL, {
             method: "POST",
             headers: {'Content-Type': 'application/json'},
             body: JSON.stringify(data)

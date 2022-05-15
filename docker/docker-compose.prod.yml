@@ -13,5 +13,6 @@ services:
       - PORT=5000
       - MONGO_URL=mongodb://10.20.20.98/
       - ORCHESTRATOR_URL=http://83.212.238.166:50001/analysis
+      - ORCHESTRATOR_INGESTION_URL=http://83.212.238.166:50001/ingestion
       - NODE_ENV=production
     command: node app.js
