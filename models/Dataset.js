@@ -10,6 +10,7 @@ const datasetSchema = new mongoose.Schema ({
     method: String,
     link: String,
     token: String,
+    metis_args: Object
 });
 
 module.exports = datasetSchema;

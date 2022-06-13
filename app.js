@@ -21,9 +21,6 @@ const Graph = mongoose.main.model("Graph", graphSchema, "graphs");
 
 const datasetSchema = require('./models/Dataset');
 const Dataset = mongoose.main.model("Dataset", datasetSchema, "datasets");
-
-const requestsSchema = require('./models/Request');
-const Request = mongoose.main.model("Dataset", requestsSchema, "requests");
 // -----------------------------------------------------------------------------------------------------------
 
 const app = express();
@@ -166,15 +163,13 @@ app.route("/ingestion")
 
         // Save data to MongoDB -------------------
         if (req.session.organization === "Metis") {
-            dataset = new Request ({
+            dataset = new Dataset ({
                 label: data["dataset-label"],
                 ingestationId: data["ingestion-id"],
                 ingestionDateTime: data["ingestion-datetime"],
-                qid: data["metis-args"].qid,
+                organization: data["database-id"],
                 user: data.user,
-                fromtime: data["metis-args"].fromTime,
-                totime: data["metis-args"].toTime,
-                vesselid: data["metis-args"].vesselid
+                metis_args: req.body["metis-args"]
             });
         } else {
             dataset = new Dataset ({
