@@ -21,6 +21,9 @@ const Graph = mongoose.main.model("Graph", graphSchema, "graphs");
 
 const datasetSchema = require('./models/Dataset');
 const Dataset = mongoose.main.model("Dataset", datasetSchema, "datasets");
+
+const requestsSchema = require('./models/Request');
+const Request = mongoose.main.model("Dataset", requestsSchema, "requests");
 // -----------------------------------------------------------------------------------------------------------
 
 const app = express();
@@ -113,8 +116,9 @@ app.route("/ingestion")
         } else {
 
             const username = req.session.user;
+            const organization = req.session.organization;
 
-            res.render("ingestion", {user:username});
+            res.render("ingestion", {user:username, org:organization});
         }
 
     })
@@ -122,6 +126,8 @@ app.route("/ingestion")
 
         // Generate ingestion id
         const id = Math.random().toString(16).slice(2);
+        let data;
+        let dataset;
 
         // Create datetime
         const d = new Date();
@@ -130,34 +136,62 @@ app.route("/ingestion")
 
         const datetime = date + " " + time;
 
-        // Data structure 
-        const data = {
-            "ingestion-datetime": datetime,
-            "diastema-token": "diastema-key",
-            "ingestion-id": id.toLowerCase(),
-            "database-id": req.session.organization.toLowerCase(),
-            "method": req.body.method,
-            "link": req.body.link,
-            "token": req.body.token,
-            "dataset-label": req.body.label.toLowerCase(),
-            "user": req.session.user
+        // Data structure -------------------------
+        if (req.session.organization === "Metis") {
+            data = {
+                "metis-usecase": true,
+                "ingestion-datetime": datetime,
+                "diastema-token": "diastema-key",
+                "ingestion-id": id.toLowerCase(),
+                "database-id": req.session.organization.toLowerCase(),
+                "dataset-label": req.body.label.toLowerCase(),
+                "user": req.session.user,
+                "metis-args": req.body["metis-args"]
+            }
+
+            console.log(data);
+        } else {
+            data = {
+                "ingestion-datetime": datetime,
+                "diastema-token": "diastema-key",
+                "ingestion-id": id.toLowerCase(),
+                "database-id": req.session.organization.toLowerCase(),
+                "method": req.body.method,
+                "link": req.body.link,
+                "token": req.body.token,
+                "dataset-label": req.body.label.toLowerCase(),
+                "user": req.session.user
+            }
         }
 
-        // Save data to MongoDB
-        const dataset = new Dataset ({
-            label: data["dataset-label"],
-            ingestationId: data["ingestion-id"],
-            ingestionDateTime: data["ingestion-datetime"],
-            organization: data["database-id"],
-            user: data.user,
-            method: data.method,
-            link: data.link,
-            token: data.token
-        });
+        // Save data to MongoDB -------------------
+        if (req.session.organization === "Metis") {
+            dataset = new Request ({
+                label: data["dataset-label"],
+                ingestationId: data["ingestion-id"],
+                ingestionDateTime: data["ingestion-datetime"],
+                qid: data["metis-args"].qid,
+                user: data.user,
+                fromtime: data["metis-args"].fromTime,
+                totime: data["metis-args"].toTime,
+                vesselid: data["metis-args"].vesselid
+            });
+        } else {
+            dataset = new Dataset ({
+                label: data["dataset-label"],
+                ingestationId: data["ingestion-id"],
+                ingestionDateTime: data["ingestion-datetime"],
+                organization: data["database-id"],
+                user: data.user,
+                method: data.method,
+                link: data.link,
+                token: data.token
+            });
+        }
         dataset.save()
         console.log("[INFO] Dataset information saved to MongoDB!");
 
-        // Send data to Orchestrator
+        // Send data to Orchestrator ------
         fetch(ORCHESTRATOR_INGESTION_URL, {
             method: "POST",
             headers: {'Content-Type': 'application/json'},
