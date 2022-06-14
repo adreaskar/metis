@@ -56,15 +56,15 @@
                     <!-- Label input -->
                     <div class="col">
                       <div class="form-outline">
-                        <input type="text" class="form-control" name="label" id="label" / >
+                        <input type="text" class="form-control" name="label" id="label"  required/>
                         <label class="form-label" for="typeText">Dataset label</label>
                       </div>
                     </div>
 
                     <!-- Vessel id input -->
                     <div class="col">
-                        <div class="form-outline mb-4">
-                            <input type="text" class="form-control" name="vesselid" id="vesselid"/ >
+                        <div class="form-outline">
+                            <input type="text" class="form-control" name="vesselid" id="vesselid" required/>
                             <label class="form-label" for="typeText">Vessel id</label>
                         </div>
                     </div>
@@ -75,7 +75,7 @@
                     <!-- From time input -->
                     <div class="col">
                       <div class="form-outline">
-                        <input type="text" class="form-control" name="fromtime" id="fromtime" / >
+                        <input type="text" class="form-control" name="fromtime" id="fromtime" required/>
                         <label class="form-label" for="typeText">From time</label>
                       </div>
                     </div>
@@ -84,7 +84,7 @@
                     <div class="col">
                         <div class="col">
                             <div class="form-outline">
-                              <input type="text" class="form-control" name="totime" id="totime" / >
+                              <input type="text" class="form-control" name="totime" id="totime" required/>
                               <label class="form-label" for="typeText">To time</label>
                             </div>
                         </div>
@@ -93,7 +93,7 @@
                 
                 <!-- qid input -->
                 <div class="form-outline mb-4">
-                    <input type="text" class="form-control" name="qid" id="qid" / >
+                    <input type="text" class="form-control" name="qid" id="qid" required/>
                     <label class="form-label" for="typeText">Dataset qid</label>
                 </div>
 
@@ -199,7 +199,10 @@
             pairsArray.forEach(element => {
                 let key = element.key
                 let val = element.value
-                data["metis-args"][key] = val
+
+                if (key!="" && val!="") {
+                    data["metis-args"][key] = val
+                }
             });
 
             $.ajax({
@@ -211,8 +214,13 @@
                     window.location.replace("/modelling");
                 }
             })
+        })
 
-            
+        $("#pairtest").click(()=>{
+            item = gatherPairs();
+            item.forEach(element => {
+                console.log(element.key);
+            });
         })
 
         function gatherPairs() {
